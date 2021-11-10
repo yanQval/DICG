@@ -6,6 +6,8 @@ from __future__ import print_function
 
 from smac.env.multiagentenv import MultiAgentEnv
 
+
+import gym
 import atexit
 from operator import attrgetter
 from copy import deepcopy
@@ -16,7 +18,7 @@ from absl import logging
 import random
 
 
-class AlohaEnv(MultiAgentEnv):
+class AlohaEnv(gym.Env):
     """The StarCraft II environment for decentralised multi-agent
     micromanagement scenarios.
     """
