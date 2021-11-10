@@ -31,6 +31,8 @@ class AlohaEnv(gym.Env):
             state_last_action=True,
             seed=None
     ):
+        super(AlohaEnv, self).__init__()
+
         # Map arguments
         self._seed = random.randint(0, 9999)
         np.random.seed(self._seed)
@@ -48,6 +50,8 @@ class AlohaEnv(gym.Env):
 
         # Actions
         self.n_actions = 2
+        self.action_space = spaces.Discrete(self.n_actions)
+        self.observation_space=spaces.Box(-100., 100.)
         self.reward_scale = 10.
 
         # Statistics
