@@ -8,6 +8,7 @@ from smac.env.multiagentenv import MultiAgentEnv
 
 
 import gym
+from gym import spaces
 import atexit
 from operator import attrgetter
 from copy import deepcopy
