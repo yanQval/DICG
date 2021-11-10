@@ -41,7 +41,7 @@ def run(args):
             # ('npreys={}', args.n_preys),
             # ('penalty={:.2f}', args.penalty),
             # ('stepcost={:.2f}', args.step_cost),
-            ('avis={}', bool(args.agent_visible)),
+            # ('avis={}', bool(args.agent_visible)),
             ('steps={}', args.max_env_steps),
             ('nenvs={}', args.n_envs),
             ('bs={:0.0e}', args.bs),
@@ -223,7 +223,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_greedy', type=int, default=1)
     parser.add_argument('--eval_epoch_freq', type=int, default=5)
     # Env
-    # parser.add_argument('--max_env_steps', type=int, default=200)
+    parser.add_argument('--max_env_steps', type=int, default=20)
     # parser.add_argument('--grid_size', type=int, default=10)
     # parser.add_argument('--n_agents', '-n', type=int, default=8)
     # parser.add_argument('--n_preys', type=int, default=8)
