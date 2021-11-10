@@ -78,6 +78,8 @@ class AlohaEnv(gym.Env):
                              [0., 0., 1., 0., 0., 0., 1., 0., 1., 0.],
                              [0., 0., 0., 1., 0., 0., 0., 1., 0., 1.],
                              [0., 0., 0., 0., 1., 0., 0., 0., 1., 0.]])
+        
+        self.pickleable = True
 
     def step(self, actions):
         """Returns reward, terminated, info."""
