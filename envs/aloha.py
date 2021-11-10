@@ -52,7 +52,7 @@ class AlohaEnv(gym.Env):
         # Actions
         self.n_actions = 2
         self.action_space = spaces.Discrete(self.n_actions)
-        self.observation_space=spaces.Box(-100., 100.)
+        self.observation_space=spaces.Box(-100., 100., shape=(1))
         self.reward_scale = 10.
 
         # Statistics
