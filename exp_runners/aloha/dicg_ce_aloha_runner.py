@@ -225,7 +225,7 @@ if __name__ == '__main__':
     # Env
     parser.add_argument('--max_env_steps', type=int, default=20)
     # parser.add_argument('--grid_size', type=int, default=10)
-    # parser.add_argument('--n_agents', '-n', type=int, default=8)
+    parser.add_argument('--n_agents', '-n', type=int, default=10)
     # parser.add_argument('--n_preys', type=int, default=8)
     # parser.add_argument('--step_cost', type=float, default=-0.1)
     # parser.add_argument('--penalty', type=float, default=-0.5)
