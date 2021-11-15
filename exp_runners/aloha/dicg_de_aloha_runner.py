@@ -119,7 +119,7 @@ def run(args):
                 env_spec=env.spec,
                 policy=policy,
                 baseline=baseline,
-                max_path_length=args.max_env_steps, # Notice
+                max_path_length=args.episode_limit, # Notice
                 discount=args.discount,
                 center_adv=bool(args.center_adv),
                 positive_adv=bool(args.positive_adv),
