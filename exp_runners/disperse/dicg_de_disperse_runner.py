@@ -165,7 +165,7 @@ if __name__ == '__main__':
     # Env
     parser.add_argument('--episode_limit', type=int, default=10)
     parser.add_argument('--n_agents', '-n', type=int, default=12)
-    parser.add_argument('--n_ations', type=int, default=4)
+    parser.add_argument('--n_actions', type=int, default=4)
     # Algo
     # parser.add_argument('--max_algo_path_length', type=int, default=n_steps)
     parser.add_argument('--hidden_nonlinearity', type=str, default='tanh')
