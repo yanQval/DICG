@@ -32,7 +32,7 @@ class SensorWrapper(SensorEnv):
         self.pickleable = False
 
     def get_avail_actions(self):
-        avail_actions = self.acail_actions
+        avail_actions = self.avail_actions
         if not self.centralized:
             return avail_actions
         else:

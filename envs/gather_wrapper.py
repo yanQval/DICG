@@ -88,7 +88,7 @@ class GatherWrapper(GatherEnv):
             # Take precaution
             if type(info) == dict: 
                 if 'battle_won' in info.keys():
-                    win += info["battle"]
+                    win += info["battle_won"]
         
         pbar.stop()
         policy.reset([True])
