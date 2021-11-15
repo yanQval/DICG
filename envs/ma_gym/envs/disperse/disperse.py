@@ -69,7 +69,7 @@ class DisperseEnv(gym.Env):
         # print([float(x) for x in (self.actions == agent_action)])
         action_one_hot = np.zeros(self.n_actions)
         action_one_hot[agent_action] = 1.
-        return action_one_hot.to_list() + [self.needs[agent_action]] + [float(x) for x in (self.actions == agent_action)]
+        return action_one_hot.tolist() + [self.needs[agent_action]] + [float(x) for x in (self.actions == agent_action)]
         # return np.array([agent_action, self.needs[agent_action], (self.actions == agent_action).sum()])
 
 
