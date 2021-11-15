@@ -21,7 +21,7 @@ from garage import wrap_experiment
 from garage.envs import GarageEnv
 from garage.experiment.deterministic import set_seed
 
-from envs import PursuitWrapper
+from envs import GatherWrapper
 from dicg.torch.algos import CentralizedMAPPO
 from dicg.torch.baselines import DICGCritic
 from dicg.torch.policies import DecCategoricalMLPPolicy
@@ -52,7 +52,7 @@ def run(args):
     else:
         exp_name = args.exp_name
 
-    prefix = 'pursuit'
+    prefix = 'gather'
     id_suffix = ('_' + str(args.run_id)) if args.run_id != 0 else ''
     unseeded_exp_dir = './data/' + args.loc +'/' + exp_name[:-7]
     exp_dir = './data/' + args.loc +'/' + exp_name + id_suffix
@@ -68,20 +68,22 @@ def run(args):
                          snapshot_mode='last', 
                          snapshot_gap=1)
         
-        def train_pursuit(ctxt=None, args_dict=vars(args)):
+        def train_gather(ctxt=None, args_dict=vars(args)):
             args = SimpleNamespace(**args_dict)
             
             set_seed(args.seed)
             
-            env = PursuitWrapper(
+            env = GatherWrapper(
                 centralized=True,
-                n_agents=10,
-                n_preys=5,
-                episode_limit=50,
-                map_size=10,
-                catch_reward=1,
-                catch_fail_reward=-1,
-                sight_range=2,
+                n_agents=5,
+                episode_limit=8,
+                map_height=3,
+                map_width=5,
+                catch_reward=10,
+                catch_fail_reward=-5,
+                target_reward=0.0,
+                other_reward=5,
+                seed=None
             )
             env = GarageEnv(env)
 
@@ -143,7 +145,7 @@ def run(args):
             runner.train(n_epochs=args.n_epochs, 
                          batch_size=args.bs)
 
-        train_pursuit(args_dict=vars(args))
+        train_gather(args_dict=vars(args))
 
 
 if __name__ == '__main__':
@@ -154,7 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default=None)
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=205)
+    parser.add_argument('--n_epochs', type=int, default=340)
     parser.add_argument('--bs', type=int, default=60000)
     parser.add_argument('--n_envs', type=int, default=1)
     # Eval
@@ -166,8 +168,8 @@ if __name__ == '__main__':
     parser.add_argument('--eval_greedy', type=int, default=1)
     parser.add_argument('--eval_epoch_freq', type=int, default=5)
     # Env
-    parser.add_argument('--episode_limit', type=int, default=50)
-    parser.add_argument('--n_agents', '-n', type=int, default=10)
+    parser.add_argument('--episode_limit', type=int, default=8)
+    parser.add_argument('--n_agents', '-n', type=int, default=5)
     # Algo
     # parser.add_argument('--max_algo_path_length', type=int, default=n_steps)
     parser.add_argument('--hidden_nonlinearity', type=str, default='tanh')

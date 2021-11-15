@@ -21,7 +21,7 @@ from garage import wrap_experiment
 from garage.envs import GarageEnv
 from garage.experiment.deterministic import set_seed
 
-from envs import PredatorPreyWrapper
+from envs import HallwayWrapper
 from dicg.torch.algos import CentralizedMAPPO
 from dicg.torch.baselines import DICGCritic
 from dicg.torch.policies import DecCategoricalMLPPolicy
@@ -38,11 +38,6 @@ def run(args):
             ('res={}', bool(args.residual)),
             ('entcoeff={}', args.ent),
             ('nagents={}', args.n_agents),
-            ('npreys={}', args.n_preys),
-            ('penalty={:.2f}', args.penalty),
-            ('stepcost={:.2f}', args.step_cost),
-            ('avis={}', bool(args.agent_visible)),
-            ('steps={}', args.max_env_steps),
             ('nenvs={}', args.n_envs),
             ('bs={:0.0e}', args.bs),
             ('splits={}', args.opt_n_minibatches),
@@ -57,7 +52,7 @@ def run(args):
     else:
         exp_name = args.exp_name
 
-    prefix = 'predatorprey'
+    prefix = 'hallway'
     id_suffix = ('_' + str(args.run_id)) if args.run_id != 0 else ''
     unseeded_exp_dir = './data/' + args.loc +'/' + exp_name[:-7]
     exp_dir = './data/' + args.loc +'/' + exp_name + id_suffix
@@ -73,21 +68,19 @@ def run(args):
                          snapshot_mode='last', 
                          snapshot_gap=1)
         
-        def train_predatorprey(ctxt=None, args_dict=vars(args)):
+        def train_hallway(ctxt=None, args_dict=vars(args)):
             args = SimpleNamespace(**args_dict)
             
             set_seed(args.seed)
             
-            env = PredatorPreyWrapper(
+            env = HallwayWrapper(
                 centralized=True,
-                grid_shape=(args.grid_size, args.grid_size),
-                n_agents=args.n_agents,
-                n_preys=args.n_preys,
-                max_steps=args.max_env_steps,
-                step_cost=args.step_cost,
-                prey_capture_reward=args.capture_reward,
-                penalty=args.penalty,
-                other_agent_visible=bool(args.agent_visible)
+                n_agents=12,
+                n_groups=5,
+                state_numbers=[4,4,4,4,4,4,4,4,4,4,4,4],
+                group_ids=[0,0,1,1,2,2,3,3,3,4,4,4],
+                reward_win=11,
+                seed=None
             )
             env = GarageEnv(env)
 
@@ -129,7 +122,7 @@ def run(args):
                 env_spec=env.spec,
                 policy=policy,
                 baseline=baseline,
-                max_path_length=args.max_env_steps, # Notice
+                max_path_length=args.episode_limit, # Notice
                 discount=args.discount,
                 center_adv=bool(args.center_adv),
                 positive_adv=bool(args.positive_adv),
@@ -149,26 +142,8 @@ def run(args):
             runner.train(n_epochs=args.n_epochs, 
                          batch_size=args.bs)
 
-        train_predatorprey(args_dict=vars(args))
+        train_hallway(args_dict=vars(args))
 
-    elif args.mode in ['restore', 'eval']:
-        data = joblib.load(exp_dir + '/params.pkl')
-        env = data['env']
-        algo = data['algo']
-
-        if args.mode == 'restore':
-            from dicg.experiment.runner_utils import restore_training
-            restore_training(exp_dir, exp_name, args,
-                             env_saved=env.pickleable, env=env)
-
-        elif args.mode == 'eval':
-            env.eval(algo.policy, n_episodes=args.n_eval_episodes, 
-                greedy=args.eval_greedy, load_from_file=True, render=args.render)
-            env.close()
-
-    elif args.mode == 'analysis':
-        from exp_runners.predatorprey.attention_stats import attn_analysis
-        attn_analysis(unseeded_exp_dir, args, seeds=[1], de=True)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -178,7 +153,7 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default=None)
     # Train
     parser.add_argument('--seed', '-s', type=int, default=1)
-    parser.add_argument('--n_epochs', type=int, default=1000)
+    parser.add_argument('--n_epochs', type=int, default=340)
     parser.add_argument('--bs', type=int, default=60000)
     parser.add_argument('--n_envs', type=int, default=1)
     # Eval
@@ -186,18 +161,12 @@ if __name__ == '__main__':
     parser.add_argument('--n_eval_episodes', type=int, default=100)
     parser.add_argument('--render', type=int, default=1)
     parser.add_argument('--inspect_steps', type=int, default=0)
-    parser.add_argument('--eval_during_training', type=int, default=0)
+    parser.add_argument('--eval_during_training', type=int, default=1)
     parser.add_argument('--eval_greedy', type=int, default=1)
     parser.add_argument('--eval_epoch_freq', type=int, default=5)
     # Env
-    parser.add_argument('--max_env_steps', type=int, default=200)
-    parser.add_argument('--grid_size', type=int, default=10)
-    parser.add_argument('--n_agents', '-n', type=int, default=8)
-    parser.add_argument('--n_preys', type=int, default=8)
-    parser.add_argument('--step_cost', type=float, default=-0.1)
-    parser.add_argument('--penalty', type=float, default=0)
-    parser.add_argument('--capture_reward', type=float, default=10)
-    parser.add_argument('--agent_visible', type=int, default=1)
+    parser.add_argument('--episode_limit', type=int, default=14)
+    parser.add_argument('--n_agents', '-n', type=int, default=12)
     # Algo
     # parser.add_argument('--max_algo_path_length', type=int, default=n_steps)
     parser.add_argument('--hidden_nonlinearity', type=str, default='tanh')
