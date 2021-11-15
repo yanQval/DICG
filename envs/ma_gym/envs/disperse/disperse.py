@@ -55,8 +55,8 @@ class DisperseEnv(gym.Env):
 
         self.action_space = MultiAgentActionSpace([spaces.Discrete(self.n_actions) for _ in range(self.n_agents)])
 
-        self._obs_high = np.array([float(self.n_agents + 1)])
-        self._obs_low = np.array([0.])
+        self._obs_high = np.array([float(self.n_agents + 1)] * (self.n_actions + 1 + self.n_agents))
+        self._obs_low = np.array([0.] * (self.n_actions + 1 + self.n_agents))
         self.observation_space = MultiAgentObservationSpace([spaces.Box(self._obs_low, self._obs_high) for _ in range(self.n_agents)])
 
     def action_space_sample(self):
