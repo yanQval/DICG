@@ -28,6 +28,8 @@ class AlohaWrapper(AlohaEnv):
                 low=np.array(list(self.observation_space.low) * self.n_agents),
                 high=np.array(list(self.observation_space.high) * self.n_agents)
             )
+        
+        self.pickleable = False
 
     def get_avail_actions(self):
         avail_actions = [[1] * self.action_space.n for _ in range(self.n_agents)]
