@@ -16,7 +16,7 @@ from garage.misc.prog_bar_counter import ProgBarCounter
 
 
 
-class AlohsWrapper(AlohaEnv):
+class AlohaWrapper(AlohaEnv):
 
     def __init__(self, centralized, *args, **kwargs):
         super().__init__(*args, **kwargs)
