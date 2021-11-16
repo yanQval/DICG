@@ -87,8 +87,8 @@ class SensorWrapper(SensorEnv):
             # If case SC2 restarts during eval, KeyError: 'battle_won' can happen
             # Take precaution
             if type(info) == dict: 
-                if 'scanned' in info.keys():
-                    scanned += info["scanned"]
+                if 'scaned' in info.keys():
+                    scanned += info["scaned"]
         
         pbar.stop()
         policy.reset([True])
